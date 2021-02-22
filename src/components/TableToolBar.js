@@ -46,7 +46,7 @@ const EnhancedTableToolbar = React.memo((props) => {
           </Typography>
         ) : (
           <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-            Nutrition
+            Excel data
           </Typography>
         )}
   

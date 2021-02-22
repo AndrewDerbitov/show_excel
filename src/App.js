@@ -78,7 +78,7 @@ const handleUpload = React.useCallback(e => {
         
         if (!headFile.length){
           headFile = val.map((head, index) => {
-            return { id: head, numeric: index>0, disablePadding: false, label: index<1 ? head : `${head} ($)` };
+            return { id: head, numeric: index>0, disablePadding: false, label: index<1 ? head : `${head}($)` };
           });
         }else{
           let compRows = [];

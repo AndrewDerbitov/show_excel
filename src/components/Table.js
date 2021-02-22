@@ -171,7 +171,7 @@ function descendingComparator(a, b, orderBy) {
                         {/* <TableCell component="th" id={labelId} scope="row" padding="none">
                           {index}
                         </TableCell> */}
-                        {Object.keys(row).map( (index) => (<TableCell key={index} align="right">{row[index]}</TableCell>)) }
+                        {Object.keys(row).map( (index) => index!=='key' ? (<TableCell key={index} align="right">{row[index]}</TableCell>): null) }
                         
                       </TableRow>
                     );
