@@ -119,7 +119,7 @@ const classes = useStyles();
           Upload
         </Button>
       </label>
-      {rows.length>0 && headCells.length>0 && <Table rows={rows} headCells={headCells}/>}
+      {rows.length>0 && headCells.length>0 && <Table rows={rows} headCells={headCells} setRows={setRows}/>}
         <Copyright />
       </Box>
     </Container>

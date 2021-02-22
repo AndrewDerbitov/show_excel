@@ -7,7 +7,7 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
 const EnhancedTableHead =  React.memo(function(props) {
-    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells } = props;
+    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, headCells, numCols } = props;
     const createSortHandler = (property) => (event) => {
       onRequestSort(event, property);
     };
@@ -23,7 +23,7 @@ const EnhancedTableHead =  React.memo(function(props) {
               inputProps={{ 'aria-label': 'select all desserts' }}
             />
           </TableCell>
-          {headCells.map((headCell) => (
+          {headCells.map((headCell, index) => index + 1 <= numCols ? (
             <TableCell
               key={headCell.id}
               align={headCell.numeric ? 'right' : 'left'}
@@ -43,7 +43,7 @@ const EnhancedTableHead =  React.memo(function(props) {
                 ) : null}
               </TableSortLabel>
             </TableCell>
-          ))}
+          ): null)}
         </TableRow>
       </TableHead>
     );

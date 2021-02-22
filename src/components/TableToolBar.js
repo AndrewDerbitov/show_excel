@@ -9,11 +9,22 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import TextField from '@material-ui/core/TextField';
 
 const useToolbarStyles = makeStyles((theme) => ({
     root: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(1),
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(2),
     },
     highlight:
       theme.palette.type === 'light'
@@ -32,8 +43,10 @@ const useToolbarStyles = makeStyles((theme) => ({
   
 const EnhancedTableToolbar = React.memo((props) => {
     const classes = useToolbarStyles();
-    const { numSelected } = props;
-  
+    const { numSelected, numCols, setNumCols } = props;
+    const handleChange = (event) => {
+      setNumCols(event.target.value);
+    };
     return (
       <Toolbar
         className={clsx(classes.root, {
@@ -49,8 +62,21 @@ const EnhancedTableToolbar = React.memo((props) => {
             Excel data
           </Typography>
         )}
-  
-        {numSelected > 0 ? (
+        <FormControl className={classes.formControl}>
+         
+            <TextField
+              id="standard-number"
+              label="Columns"
+              type="number"
+              value={numCols}
+              onChange={handleChange}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+        </FormControl>
+
+        {/* {numSelected > 0 ? (
           <Tooltip title="Delete">
             <IconButton aria-label="delete">
               <DeleteIcon />
@@ -62,7 +88,7 @@ const EnhancedTableToolbar = React.memo((props) => {
               <FilterListIcon />
             </IconButton>
           </Tooltip>
-        )}
+        )} */}
       </Toolbar>
     );
   });

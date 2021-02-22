@@ -9,6 +9,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
+import InputBase from '@material-ui/core/InputBase';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import EnhancedTableHead from './TableHead';
@@ -65,12 +66,13 @@ function descendingComparator(a, b, orderBy) {
     },
   }));
 
- const EnhancedTable = React.memo(({ rows, headCells } ) => {
+ const EnhancedTable = React.memo(({ rows, headCells, setRows } ) => {
     const classes = useStyles();
     const [order, setOrder] = React.useState('asc');
     const [orderBy, setOrderBy] = React.useState('calories');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
+    const [numCols, setNumCols] = React.useState(30);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
   
@@ -122,13 +124,25 @@ function descendingComparator(a, b, orderBy) {
       setDense(event.target.checked);
     };
   
+    const handleChangeCell = React.useCallback(e => {
+      const el = e.target;
+      el.value = el.value.replace(/\D/, '');
+      const keys = el.parentNode.getAttribute('indexes').split('||');
+      const newRows = rows.map((val, key) => (key===parseInt(keys[0],10)?{...val, [keys[1]]: el.value} : val))
+      setRows(newRows);
+    }, []);
+  
+
     const isSelected = (name) => selected.indexOf(name) !== -1;
   
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
     return (
       <div className={classes.root}>
         <Paper className={classes.paper}>
-          <EnhancedTableToolbar numSelected={selected.length} />
+          <EnhancedTableToolbar 
+                numSelected={selected.length}                 
+                numCols={numCols}
+                setNumCols={setNumCols} />
           <TableContainer>
             <Table
               className={classes.table}
@@ -145,6 +159,7 @@ function descendingComparator(a, b, orderBy) {
                 onRequestSort={handleRequestSort}
                 rowCount={rows.length}
                 headCells={headCells}
+                numCols={numCols}
               />
               <TableBody>
                 {stableSort(rows, getComparator(order, orderBy))
@@ -171,7 +186,17 @@ function descendingComparator(a, b, orderBy) {
                         {/* <TableCell component="th" id={labelId} scope="row" padding="none">
                           {index}
                         </TableCell> */}
-                        {Object.keys(row).map( (index) => index!=='key' ? (<TableCell key={index} align="right">{row[index]}</TableCell>): null) }
+                        {Object.keys(row).slice(0, numCols).map( (key) => key!=='key' ? (
+                          <TableCell key={`${index}-${key}`} align="right">
+                             <InputBase
+                              defaultValue={row[key]}
+                              onChange={handleChangeCell}
+                              indexes={`${index}||${key}`}
+                             
+                              inputProps={{ 'aria-label': 'naked' }}
+                            />
+                          </TableCell>
+                        ): null) }
                         
                       </TableRow>
                     );
@@ -184,6 +209,7 @@ function descendingComparator(a, b, orderBy) {
               </TableBody>
             </Table>
           </TableContainer>
+          
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
