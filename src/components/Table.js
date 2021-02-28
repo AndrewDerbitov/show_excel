@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import Draggable from 'react-draggable';
+import { Dialog, DialogTitle, DialogActions, Button } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -13,6 +15,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import EnhancedTableHead from './TableHead';
 import EnhancedTableToolbar from './TableToolBar';
+
 
 function descendingComparator(a, b, orderBy) {
 	if (b[orderBy] < a[orderBy]) {
@@ -73,13 +76,18 @@ const EnhancedTable = React.memo(({ rows, headCells, setRows }) => {
 
 	const [page, setPage] = React.useState(0);
 	const [isCrop, setCrop] = React.useState(false);
-
+	const [isDialog, setDialog] = React.useState(false);
 	const [dense, setDense] = React.useState(false);
 	const [rowsPerPage, setRowsPerPage] = React.useState(5);
 	const countClickRef = React.useRef(0);
 
 	const onCrop = React.useCallback(() => {
-		setCrop(true);
+		setCrop(!isCrop);
+		setDialog(true)
+	}, [isCrop]);
+
+	const handleClose = React.useCallback(() => {
+		setDialog(false)
 	}, []);
 
 	const handleRequestSort = React.useCallback(
@@ -174,6 +182,28 @@ const EnhancedTable = React.memo(({ rows, headCells, setRows }) => {
 	return (
 		<div className={classes.root}>
 			<Paper className={classes.paper}>
+				<Dialog
+					open={isDialog}
+					aria-labelledby='dialog-modal-title'
+					PaperProps={{ tabIndex: -1 }}
+					TransitionComponent={Draggable}
+					TransitionProps={{ handle: '.dialog-title' }}
+				>
+					<DialogTitle classes={{ root: 'dialog-title' }} id='dialog-modal-title'>
+						<InputBase
+							defaultValue='Some text'
+							inputProps={{
+								'aria-label': 'naked',
+							}}
+						/>
+					</DialogTitle>
+					<DialogActions>
+						<Button onClick={handleClose} color="primary" autoFocus>
+							Close
+						</Button>
+					</DialogActions>
+				</Dialog>
+				
 				<EnhancedTableToolbar
 					numSelected={
 						(selectedFinished[0] - selectedStart[0] + 1) *
